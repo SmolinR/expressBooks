@@ -27,7 +27,4 @@ router
             return res.status(200).send('Администратор успешно снят')
         }
     })
-
-router
-
 module.exports = router
