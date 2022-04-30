@@ -1,3 +1,4 @@
-const MONGO_URL = "mongodb+srv://Ruslan:30092005ruslaN@ruha.vqxk3.mongodb.net/ruhaExpress?retryWrites=true&w=majority"
+require("dotenv").config()
+const MONGO_URL = process.env.MONGO_URL
 
 module.exports = { MONGO_URL }
