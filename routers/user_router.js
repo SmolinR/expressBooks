@@ -9,5 +9,6 @@ router
     .get('/', async function(req, res) {
         res.status(200).send(req.user)
     })
+console.log('321')
 
 module.exports = router
