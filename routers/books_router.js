@@ -70,6 +70,5 @@ router
         await book.save()
         res.send(book.comment)
     })
-console.log('123')
 
 module.exports = router
