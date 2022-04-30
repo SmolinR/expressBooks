@@ -8,6 +8,7 @@ const categoriesRouter = require('./routers/categories_router')
 const mongoose = require('mongoose')
 const { MONGO_URL } = require('./constants');
 const { FRONTEND_URL } = require('./constants')
+const { PORT } = require('./constants')
 mongoose
     .connect(MONGO_URL, { useNewUrlParser: true })
     .then(() => {
@@ -23,7 +24,7 @@ mongoose
         app.use('/categories', categoriesRouter)
 
 
-        app.listen(3000, () => {
+        app.listen(PORT, () => {
             console.log("Server has started!")
         })
     })
