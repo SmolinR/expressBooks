@@ -12,6 +12,7 @@ router
         const user = new users({
             login: req.query.login,
             password: req.query.password,
+            isAdmin: false
         })
         await user.save()
 
