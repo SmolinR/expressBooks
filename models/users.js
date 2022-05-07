@@ -5,7 +5,7 @@ const schema = mongoose.Schema({
     password: String,
     token: String,
     avarageRating: Number,
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false },
 })
 
 module.exports = mongoose.model('users', schema)
