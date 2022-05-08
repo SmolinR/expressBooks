@@ -10,9 +10,8 @@ const userRouter = require('./routers/user_router');
 const usersRouter = require('./routers/users_router');
 const categoriesRouter = require('./routers/categories_router');
 const adminRouter = require('./routers/admin_router');
-const { MONGO_URL } = require('./constants');
-const { FRONTEND_URL } = require('./constants');
-const { PORT } = require('./constants');
+const { PORT, MONGO_URL, FRONTEND_URL } = require('./constants');
+const options = require('./swagger-options');
 
 mongoose
     .connect(MONGO_URL, { useNewUrlParser: true })
@@ -31,43 +30,6 @@ mongoose
         app.use('/categories', categoriesRouter);
         app.use('/admin', adminRouter);
 
-        const options = {
-            definition: {
-                openapi: '3.0.0',
-                info: {
-                    title: 'Books app documentation',
-                    version: '0.1.0',
-                    description: 'There is all routes for this app',
-                    license: {
-                        name: 'MIT',
-                        url: 'https://spdx.org/licenses/MIT.html',
-                    },
-                    contact: {
-                        name: 'SmolinR',
-                        url: 'https://github.com/SmolinR',
-                        email: 'rslnsmln@gmail.com',
-                    },
-                },
-                security: [{
-                    ApiKeyAuth: [],
-                }],
-                components: {
-                    securitySchemes: {
-                        ApiKeyAuth: {
-                            type: 'apiKey',
-                            description: 'API key to authorize requests.',
-                            name: 'Authorization',
-                            in: 'header',
-                        },
-                    },
-                },
-                servers: [{
-                    url: 'http://localhost:3000',
-                }],
-            },
-            apis: ['./routers/*'],
-        };
-
         const specs = swaggerJsdoc(options);
         app.use(
             '/api-docs',
@@ -76,6 +38,7 @@ mongoose
         );
 
         app.listen(PORT, () => {
-            console.log(`Server has started on port${PORT}!`);
+            // eslint-disable-next-line no-console
+            console.log(`Server has started on port ${PORT}!`);
         });
     });

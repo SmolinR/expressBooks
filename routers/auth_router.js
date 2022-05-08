@@ -1,41 +1,5 @@
 /**
  * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       required:
- *         - login
- *         - password
- *       properties:
- *         id:
- *           type: integer
- *           description: The auto-generated id of the book.
- *         login:
- *           type: string
- *           description: The name of user.
- *         password:
- *           type: string
- *           description: User`s password.
- *         token:
- *           type: string
- *           description: User`s authorization token
- *         avarageRating:
- *           type: number
- *           description: The avarage rating of user`s books.
- *         isAdmin:
- *           type: boolean
- *           description: Does user have admin permissions, default is false
- *       example:
- *          login: Ruslan
- *          password: 123
- *          token: z4ld41tppo
- *          avarageRating: 56
- *          isAdmin: false
- */
-
-/**
- * @swagger
  *  tags:
  *      name: Auth
  *      description: The auth managing API
@@ -134,20 +98,20 @@ router
 /**
  * @swagger
  * /auth/logout:
- *          delete:
- *                  summary: Logout, deleting auth token
- *                  tags: [Auth]
- *                  parameters:
- *                      - in: header
- *                        name: Authorization
- *                        schema:
- *                          type: string
- *                          required: true
- *                  responses:
- *                          200:
- *                              description: User was logedout
- *                          401:
- *                              description: User is not authorized
+ *       delete:
+ *              summary: Logout, deleting auth token
+ *              tags: [Auth]
+ *              parameters:
+ *                 - in: header
+ *                   name: Authorization
+ *                   schema:
+ *                      type: string
+ *                      required: true
+ *              responses:
+ *                    200:
+ *                        description: User was logedout
+ *                    401:
+ *                        description: User is not authorized
  *
  */
 
