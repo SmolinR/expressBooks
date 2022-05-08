@@ -1,74 +1,202 @@
-const { query } = require('express');
+/**
+ * @swagger
+ *  tags:
+ *      name: Books
+ *      description: The books managing API
+ */
+
 const express = require('express');
+
 const router = express.Router();
-const isAuth = require('../middleware/is_authorized')
-const books = require('../models/books');
+const isAuth = require('../middleware/is_authorized');
+const Books = require('../models/books');
 const users = require('../models/users');
-const randomNumber = require('../utils/rndNumb');
 const randomNumber2 = require('../utils/rndNumb2');
 
+router.use(isAuth);
 
-router.use(isAuth)
+/**
+ * @swagger
+ * /books:
+ *      get:
+ *          summary: Returns the list of all books, if u type authorId in body u get books of this author, if u type users=true in query parameters
+ *          tags: [Books]
+ *          parameters:
+ *              - in: query
+ *                name: authorId
+ *                schema:
+ *                  type: string
+ *                  description: The author`s id
+ *              - in: query
+ *                name: users
+ *                schema:
+ *                  type: boolean
+ *                  description: Users parameter for authorId
+ *          responses:
+ *              200:
+ *                  description: The list of the books
+ *                  content:
+ *                      application/json:
+ *                       schema:
+ *                          type: array
+ *                          items:
+ *                              $ref: '#/components/schemas/Book'
+ *              401:
+ *                  description: User is not authorized
+ *
+ */
 
 router
-    .get('/', async function(req, res) {
-        if (req.query.users == 'true') {
-            const allBooks = await books.find().populate('authorId');
-            res.status(200).send(allBooks)
+    .get('/', async (req, res) => {
+        if (req.query.users === 'true') {
+            const allBooks = await Books.find().populate('authorId');
+            res.status(200).send(allBooks);
         } else if (req.query.authorId) {
-            const book = await books.find({ authorId: req.query.authorId })
-            console.log(book)
+            const book = await Books.find({ authorId: req.query.authorId });
             if (!book) {
-                res.status(404).send('Книги этого автора не найдены')
+                res.status(404).send('Книги этого автора не найдены');
             } else {
-                res.status(200).send(book)
+                res.status(200).send(book);
             }
-
         } else {
-            const allBooks2 = await books.find();
-            res.status(200).send(allBooks2)
+            const allBooks2 = await Books.find();
+            res.status(200).send(allBooks2);
         }
-    })
+    });
+
+/**
+ * @swagger
+ *  /books:
+ *       post:
+ *          summary: Create a new book
+ *          tags: [Books]
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Book'
+ *                      example:
+ *                          title: string
+ *                          authorId: string
+ *          responses:
+ *              201:
+ *                  description: The book was created
+ *                  content:
+ *                      application/json:
+ *                          $ref: '#/components/schemas/Book'
+ *              401:
+ *                  description: User is not authorized
+ *              404:
+ *                  description: The book`s author is not found
+ *
+ *
+ *
+ */
+
 router
-    .post('/', async function(req, res) {
-        const user = await users.findOne({ _id: req.query.authorId })
+    .post('/', async (req, res) => {
+        const user = await users.findOne({ _id: req.body.authorId });
         if (user) {
-            const book = new books({
-                title: req.query.title,
-                authorId: req.query.authorId,
-                rating: randomNumber2(0, 100)
-            })
+            const book = new Books({
+                title: req.body.title,
+                authorId: req.body.authorId,
+                rating: randomNumber2(0, 100),
+            });
             await book.save();
-            let avarageRating = await books.aggregate([
-                { $group: { _id: "$authorId", avg: { $avg: "$rating" } } },
-            ])
-            console.log(avarageRating)
+            const avarageRating = await Books.aggregate([
+                { $group: { _id: '$authorId', avg: { $avg: '$rating' } } },
+            ]);
             user.avarageRating = avarageRating[0].avg;
             await user.save();
-            return res.status(201).send('Книга создана')
+            return res.status(201).send('Книга создана');
         }
-        res.status(404).send('Такого автора не существует');
+        return res.status(404).send('Такого автора не существует');
+    });
 
-
-    })
+/**
+ * @swagger
+ * /books/{id}/comments:
+ *                  get:
+ *                      summary: Get comments to book by id
+ *                      tags: [Books]
+ *                      parameters:
+ *                          - in: path
+ *                            name: id
+ *                            schema:
+ *                              type: string
+ *                            required: true
+ *                            description: The book id
+ *                      responses:
+ *                          200:
+ *                              description: The book comments by id
+ *                              contens:
+ *                                  application/json:
+ *                                      schema:
+ *                                          $ref: '#/components/schemas/Book'
+ *                          401:
+ *                              description: User is not authorized
+ *                          404:
+ *                             description: The book is not found
+ *
+ *
+ */
 
 router
-    .get('/:id/comments', async function(req, res) {
-        const comment = await books.findById(req.params.id)
-        res.send(comment.comment)
-    })
+    .get('/:id/comments', async (req, res) => {
+        const comment = await Books.findById(req.params.id);
+        if (comment) {
+            return res.status(200).send(comment.comment);
+        }
+        return res.status(404).send('Книга не найдена');
+    });
+
+/**
+ * @swagger
+ * /books/{id}/comments:
+ *                 post:
+ *                      summary: Create comment to book by id
+ *                      tags: [Books]
+ *                      requestBody:
+ *                          required: true
+ *                          content:
+ *                              application/json:
+ *                                  schema:
+ *                                      $ref: '#/components/schemas/Book'
+ *                                  example:
+ *                                      text: string
+ *                      parameters:
+ *                          - in: path
+ *                            name: id
+ *                            schema:
+ *                              type: string
+ *                            required: true
+ *                            description: The book id
+ *                      responses:
+ *                          201:
+ *                              description: The comment was successfully created
+ *                              content:
+ *                                  application/json:
+ *                                          $ref: '#/components/schemas/Book'
+ *                          404:
+ *                              description: The book is not found
+ *
+ */
 
 router
-    .post('/:id/comments', async function(req, res) {
-        const book = await books.findById(req.params.id)
-        let comment = {
-            text: req.query.text,
-            date: new Date(),
-            commentator: req.user.id
+    .post('/:id/comments', async (req, res) => {
+        const book = await Books.findById(req.params.id);
+        if (book) {
+            const comment = {
+                text: req.body.text,
+                date: new Date(),
+                commentator: req.user.id,
+            };
+            book.comment.push(comment);
+            await book.save();
+            return res.status(201).send(book.comment);
         }
-        book.comment[book.comment.length] = comment
-        await book.save()
-        res.send(book.comment)
-    })
+        return res.status(404).send('Книга не найдена');
+    });
 
-module.exports = router
+module.exports = router;
