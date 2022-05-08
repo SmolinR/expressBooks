@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
     title: String,
-    icon: String
-})
+    icon: String,
+});
 
-module.exports = mongoose.model('categories', schema)
+module.exports = mongoose.model('categories', schema);

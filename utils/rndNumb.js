@@ -1,5 +1,5 @@
 const randomNumber = function randomNumber() {
-    return Date.now();
-}
+  return Date.now();
+};
 
-module.exports = randomNumber
+module.exports = randomNumber;

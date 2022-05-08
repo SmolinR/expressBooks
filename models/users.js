@@ -6,6 +6,6 @@ const schema = mongoose.Schema({
     token: String,
     avarageRating: Number,
     isAdmin: { type: Boolean, default: false },
-})
+});
 
-module.exports = mongoose.model('users', schema)
+module.exports = mongoose.model('users', schema);

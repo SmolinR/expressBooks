@@ -30,17 +30,13 @@
  *      description: The categories managing API
  */
 
-
-
-
-const mongoose = require('mongoose');
-const express = require('express')
+const express = require('express');
 const router = express.Router();
-const categories = require('../models/categories');
+const Categories = require('../models/categories');
 const isAdmin = require('../middleware/is_admin');
 const isAuth = require('../middleware/is_authorized');
 
-router.use(isAuth, isAdmin)
+router.use(isAuth, isAdmin);
 
 /**
  * @swagger
@@ -64,42 +60,42 @@ router.use(isAuth, isAdmin)
  */
 
 router
-    .get('/', async function(req, res) {
-        const allCategories = await categories.find()
-        return res.status(200).send(allCategories)
-    })
-    /**
-     * @swagger
-     *  /categories:
-     *          post:
-     *              summary: Create new category, admin permission only
-     *              tags: [Categories]
-     *              requestBody:
-     *                  required: true
-     *                  content:
-     *                      application/json:
-     *                              schema:
-     *                                  $ref: '#/components/schemas/Categories'
-     *              responses:
-     *                      201:
-     *                          description: The category was created
-     *                          content:
-     *                              application/json:
-     *                                  $ref: '#/components/schemas/Categories'
-     *                      401:
-     *                          description: User is not authorized
-     *                      403:
-     *                          description: User doesn`t have permissions
-     *                          
-     */
+    .get('/', async(req, res) => {
+        const allCategories = await Categories.find();
+        return res.status(200).send(allCategories);
+    });
+/**
+ * @swagger
+ *  /categories:
+ *          post:
+ *              summary: Create new category, admin permission only
+ *              tags: [Categories]
+ *              requestBody:
+ *                  required: true
+ *                  content:
+ *                      application/json:
+ *                              schema:
+ *                                  $ref: '#/components/schemas/Categories'
+ *              responses:
+ *                      201:
+ *                          description: The category was created
+ *                          content:
+ *                              application/json:
+ *                                  $ref: '#/components/schemas/Categories'
+ *                      401:
+ *                          description: User is not authorized
+ *                      403:
+ *                          description: User doesn`t have permissions
+ *
+ */
 router
-    .post('/', async function(req, res) {
-        const category = new categories({
+    .post('/', async(req, res) => {
+        const category = new Categories({
             title: req.body.title,
-            icon: req.body.title
-        })
-        await category.save()
-        res.status(201).send(category)
-    })
+            icon: req.body.icon,
+        });
+        await category.save();
+        return res.status(201).send(category);
+    });
 
-module.exports = router
+module.exports = router;
