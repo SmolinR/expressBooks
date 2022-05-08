@@ -41,6 +41,7 @@
  *      description: The auth managing API
  */
 const express = require('express');
+
 const router = express.Router();
 const randomString = require('../utils/rndString');
 const Users = require('../models/users');
@@ -117,7 +118,7 @@ router
 
 router
     .post('/sign-in', async (req, res) => {
-        const user = await users.findOne({ login: req.body.login, password: req.body.password });
+        const user = await Users.findOne({ login: req.body.login, password: req.body.password });
         if (user) {
             const newToken = {
                 token: randomString(10),
@@ -152,7 +153,7 @@ router
 
 router
     .delete('/logout', async (req, res) => {
-        const user = await users.findOne({ token: req.header('Authorization') });
+        const user = await Users.findOne({ token: req.header('Authorization') });
         if (user) {
             user.token = null;
             await user.save();

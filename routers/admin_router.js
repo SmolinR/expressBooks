@@ -74,7 +74,7 @@ router
  */
 
 router
-    .patch('/delete-admin', async(req, res) => {
+    .patch('/delete-admin', async (req, res) => {
         const user = await users.findOne({ _id: req.body.id });
         if (user) {
             user.isAdmin = false;

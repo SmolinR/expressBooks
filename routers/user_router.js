@@ -27,8 +27,8 @@ router.use(isAuth);
      *                      description: User is not authorized
      */
 router
-  .get('/', async (req, res) => {
-    res.status(200).send(req.user);
-  });
+    .get('/', async (req, res) => {
+        res.status(200).send(req.user);
+    });
 
 module.exports = router;

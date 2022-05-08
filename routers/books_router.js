@@ -39,11 +39,10 @@
  */
 
 const express = require('express');
-const res = require('express/lib/response');
 
 const router = express.Router();
 const isAuth = require('../middleware/is_authorized');
-const books = require('../models/books');
+const Books = require('../models/books');
 const users = require('../models/users');
 const randomNumber2 = require('../utils/rndNumb2');
 
@@ -83,17 +82,17 @@ router.use(isAuth);
 router
     .get('/', async (req, res) => {
         if (req.query.users === 'true') {
-            const allBooks = await books.find().populate('authorId');
+            const allBooks = await Books.find().populate('authorId');
             res.status(200).send(allBooks);
         } else if (req.query.authorId) {
-            const book = await books.find({ authorId: req.query.authorId });
+            const book = await Books.find({ authorId: req.query.authorId });
             if (!book) {
                 res.status(404).send('Книги этого автора не найдены');
             } else {
                 res.status(200).send(book);
             }
         } else {
-            const allBooks2 = await books.find();
+            const allBooks2 = await Books.find();
             res.status(200).send(allBooks2);
         }
     });
@@ -132,21 +131,20 @@ router
     .post('/', async (req, res) => {
         const user = await users.findOne({ _id: req.body.authorId });
         if (user) {
-            const book = new books({
+            const book = new Books({
                 title: req.body.title,
                 authorId: req.body.authorId,
                 rating: randomNumber2(0, 100),
             });
             await book.save();
-            const avarageRating = await books.aggregate([
+            const avarageRating = await Books.aggregate([
                 { $group: { _id: '$authorId', avg: { $avg: '$rating' } } },
             ]);
-            console.log(avarageRating);
             user.avarageRating = avarageRating[0].avg;
             await user.save();
             return res.status(201).send('Книга создана');
         }
-        res.status(404).send('Такого автора не существует');
+        return res.status(404).send('Такого автора не существует');
     });
 
 /**
@@ -179,12 +177,11 @@ router
 
 router
     .get('/:id/comments', async (req, res) => {
-        console.log(req.params.id);
-        const comment = await books.findById(req.params.id);
+        const comment = await Books.findById(req.params.id);
         if (comment) {
             return res.status(200).send(comment.comment);
         }
-        res.status(404).send('Книга не найдена');
+        return res.status(404).send('Книга не найдена');
     });
 
 /**
@@ -221,7 +218,7 @@ router
 
 router
     .post('/:id/comments', async (req, res) => {
-        const book = await books.findById(req.params.id);
+        const book = await Books.findById(req.params.id);
         if (book) {
             const comment = {
                 text: req.body.text,
@@ -232,7 +229,7 @@ router
             await book.save();
             return res.status(201).send(book.comment);
         }
-        res.status(404).send('Книга не найдена');
+        return res.status(404).send('Книга не найдена');
     });
 
 module.exports = router;

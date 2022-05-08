@@ -31,6 +31,7 @@
  */
 
 const express = require('express');
+
 const router = express.Router();
 const Categories = require('../models/categories');
 const isAdmin = require('../middleware/is_admin');
@@ -60,7 +61,7 @@ router.use(isAuth, isAdmin);
  */
 
 router
-    .get('/', async(req, res) => {
+    .get('/', async (req, res) => {
         const allCategories = await Categories.find();
         return res.status(200).send(allCategories);
     });
@@ -89,7 +90,7 @@ router
  *
  */
 router
-    .post('/', async(req, res) => {
+    .post('/', async (req, res) => {
         const category = new Categories({
             title: req.body.title,
             icon: req.body.icon,
