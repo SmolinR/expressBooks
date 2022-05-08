@@ -12,6 +12,8 @@
     },
     "rules": {
         "indent": ["error", 4],
-        "code": 150
+        "max-len":["error", 150],
+        "linebreak-style": ["error", "windows"]
+        
     }
 }
