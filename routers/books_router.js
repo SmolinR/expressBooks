@@ -58,6 +58,13 @@ router
             } else {
                 res.status(200).send(book);
             }
+        } else if (req.query.id) {
+            const oneBook = await Books.findOne({ _id: req.query.id });
+            if (oneBook) {
+                res.status(200).send(oneBook);
+            } else {
+                res.status(404).send('Книга не найдена');
+            }
         } else {
             const allBooks2 = await Books.find();
             res.status(200).send(allBooks2);

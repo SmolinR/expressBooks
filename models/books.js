@@ -38,6 +38,7 @@ const schema = mongoose.Schema({
     authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     rating: Number,
     comment: { type: Array, default: [] },
+    icon: String,
 });
 
 module.exports = mongoose.model('books', schema);
