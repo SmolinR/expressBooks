@@ -66,6 +66,42 @@ router
 
 /**
  * @swagger
+ * /books/{id}:
+ *          get:
+ *              summary: Return book by id
+ *              tags: [Books]
+ *              parameters:
+ *                 - in: path
+ *                   name: id
+ *                   schema:
+ *                     type: string
+ *                     required: true
+ *                     description: The book id
+ *              responses:
+ *                      200:
+ *                          desciption: Book found
+ *                          content:
+ *                              application/json:
+ *                                  schema:
+ *                                      $ref: '#/components/schemas/Book'
+ *                      401:
+ *                          description: User is not authorized
+ *                      404:
+ *                          description: The book is not found
+ */
+
+router
+    .get('/:id', async (req, res) => {
+        const oneBook = await Books.findOne({ _id: req.params.id });
+        if (oneBook) {
+            res.status(200).send(oneBook);
+        } else {
+            res.status(404).send('Книга не найдена');
+        }
+    });
+
+/**
+ * @swagger
  *  /books:
  *       post:
  *          summary: Create a new book
