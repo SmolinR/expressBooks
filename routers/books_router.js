@@ -58,16 +58,45 @@ router
             } else {
                 res.status(200).send(book);
             }
-        } else if (req.query.id) {
-            const oneBook = await Books.findOne({ _id: req.query.id });
-            if (oneBook) {
-                res.status(200).send(oneBook);
-            } else {
-                res.status(404).send('Книга не найдена');
-            }
         } else {
             const allBooks2 = await Books.find();
             res.status(200).send(allBooks2);
+        }
+    });
+
+/**
+ * @swagger
+ * /books/{id}:
+ *          get:
+ *              summary: Return book by id
+ *              tags: [Books]
+ *              parameters:
+ *                 - in: path
+ *                   name: id
+ *                   schema:
+ *                     type: string
+ *                     required: true
+ *                     description: The book id
+ *              responses:
+ *                      200:
+ *                          desciption: Book found
+ *                          content:
+ *                              application/json:
+ *                                  schema:
+ *                                      $ref: '#/components/schemas/Book'
+ *                      401:
+ *                          description: User is not authorized
+ *                      404:
+ *                          description: The book is not found
+ */
+
+router
+    .get('/:id', async (req, res) => {
+        const oneBook = await Books.findOne({ _id: req.params.id });
+        if (oneBook) {
+            res.status(200).send(oneBook);
+        } else {
+            res.status(404).send('Книга не найдена');
         }
     });
 
