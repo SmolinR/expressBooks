@@ -54,13 +54,13 @@ router
         } else if (req.query.authorId) {
             const book = await Books.find({ authorId: req.query.authorId });
             if (!book) {
-                res.status(404).send('Книги этого автора не найдены');
+                res.status(404).json({ message: 'Книги этого автора не найдены' });
             } else {
-                res.status(200).send(book);
+                res.status(200).json(book);
             }
         } else {
             const allBooks2 = await Books.find();
-            res.status(200).send(allBooks2);
+            res.status(200).json(allBooks2);
         }
     });
 
@@ -109,9 +109,9 @@ router
             ]);
             user.avarageRating = avarageRating[0].avg;
             await user.save();
-            return res.status(201).send('Книга создана');
+            return res.status(201).json({ message: 'Книга создана' });
         }
-        return res.status(404).send('Такого автора не существует');
+        return res.status(404).json({ message: 'Такого автора не существует' });
     });
 
 /**
@@ -146,9 +146,9 @@ router
     .get('/:id/comments', async (req, res) => {
         const comment = await Books.findById(req.params.id);
         if (comment) {
-            return res.status(200).send(comment.comment);
+            return res.status(200).json(comment.comment);
         }
-        return res.status(404).send('Книга не найдена');
+        return res.status(404).json('Книга не найдена');
     });
 
 /**
@@ -194,9 +194,9 @@ router
             };
             book.comment.push(comment);
             await book.save();
-            return res.status(201).send(book.comment);
+            return res.status(201).json(book.comment);
         }
-        return res.status(404).send('Книга не найдена');
+        return res.status(404).json({ message: 'Книга не найдена' });
     });
 
 module.exports = router;

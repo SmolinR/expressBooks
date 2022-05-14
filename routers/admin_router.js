@@ -44,9 +44,9 @@ router
         if (user) {
             user.isAdmin = true;
             await user.save();
-            return res.status(200).send('Администратор успешно назначен');
+            return res.status(200).json({ message: 'Администратор успешно назначен' });
         }
-        return res.status(404).send('Пользователь не найден');
+        return res.status(404).json({ message: 'Пользователь не найден' });
     });
 
 /**
@@ -79,8 +79,8 @@ router
         if (user) {
             user.isAdmin = false;
             await user.save();
-            return res.status(200).send('Администратор успешно снят');
+            return res.status(200).json({ message: 'Администратор успешно снят' });
         }
-        return res.status(404).send('Пользователь не найден');
+        return res.status(404).json({ message: 'Пользователь не найден' });
     });
 module.exports = router;

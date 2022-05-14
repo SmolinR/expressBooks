@@ -28,7 +28,7 @@ router.use(isAuth);
      */
 router
     .get('/', async (req, res) => {
-        res.status(200).send(req.user);
+        res.status(200).json(req.user);
     });
 
 module.exports = router;

@@ -38,7 +38,7 @@ router.use(isAuth, isAdmin);
 router
     .get('/', async (req, res) => {
         const allCategories = await Categories.find();
-        return res.status(200).send(allCategories);
+        return res.status(200).json(allCategories);
     });
 /**
  * @swagger
@@ -71,7 +71,7 @@ router
             icon: req.body.icon,
         });
         await category.save();
-        return res.status(201).send(category);
+        return res.status(201).json(category);
     });
 
 module.exports = router;

@@ -22,7 +22,7 @@ const users = require('../models/users');
 router
     .get('/', async (req, res) => {
         const allUsers = await users.find();
-        res.status(200).send(allUsers);
+        res.status(200).json(allUsers);
     });
 
 module.exports = router;
