@@ -47,8 +47,7 @@ router
             password: req.body.password,
         });
         await user.save();
-
-        res.status(201).send('Пользователь зарегестрирован');
+        res.status(201).json({ message: 'Пользователь зарегестрирован' });
     });
 
 /**
@@ -89,9 +88,9 @@ router
             };
             user.token = newToken.token;
             await user.save();
-            res.status(201).send(user.token);
+            res.status(201).json({ token: user.token });
         } else {
-            res.status(401).send('Не авторизовано');
+            res.status(401).json({ message: 'Не авторизовано' });
         }
     });
 
@@ -121,9 +120,9 @@ router
         if (user) {
             user.token = null;
             await user.save();
-            return res.status(200).send('Выход произошел успешно');
+            return res.status(200).json({ message: 'Выход произошел успешно' });
         }
-        return res.status(401).send('Не авторизовано');
+        return res.status(401).json({ message: 'Не авторизовано' });
     });
 
 module.exports = router;
