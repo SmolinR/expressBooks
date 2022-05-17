@@ -50,7 +50,7 @@ router
     .get('/', async (req, res) => {
         if (req.query.users === 'true') {
             const allBooks = await Books.find().populate('authorId');
-            res.status(200).send(allBooks);
+            res.status(200).json(allBooks);
         } else if (req.query.authorId) {
             const book = await Books.find({ authorId: req.query.authorId });
             if (!book) {
