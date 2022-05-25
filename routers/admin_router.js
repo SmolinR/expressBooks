@@ -9,6 +9,7 @@ const express = require('express');
 const isAdmin = require('../middleware/is_admin');
 const isAuth = require('../middleware/is_authorized');
 const users = require('../models/users');
+const { adminValidation } = require('../validation/admin_validation');
 
 const router = express.Router();
 
@@ -40,11 +41,15 @@ router.use(isAuth, isAdmin);
 
 router
     .patch('/make-admin', async (req, res) => {
+        const { error } = adminValidation(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         const user = await users.findOne({ _id: req.body.id });
         if (user) {
             user.isAdmin = true;
             await user.save();
-            return res.status(200).json({ message: 'Администратор успешно назначен' });
+            res.status(200).json({ message: 'Администратор успешно назначен' });
         }
         return res.status(404).json({ message: 'Пользователь не найден' });
     });
@@ -75,6 +80,10 @@ router
 
 router
     .patch('/delete-admin', async (req, res) => {
+        const { error } = adminValidation(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         const user = await users.findOne({ _id: req.body.id });
         if (user) {
             user.isAdmin = false;

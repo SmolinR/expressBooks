@@ -11,6 +11,7 @@ const router = express.Router();
 const Categories = require('../models/categories');
 const isAdmin = require('../middleware/is_admin');
 const isAuth = require('../middleware/is_authorized');
+const { categoriesValidation } = require('../validation/categories_validation');
 
 router.use(isAuth, isAdmin);
 
@@ -66,6 +67,10 @@ router
  */
 router
     .post('/', async (req, res) => {
+        const { error } = categoriesValidation(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         const category = new Categories({
             title: req.body.title,
             icon: req.body.icon,
