@@ -8,10 +8,11 @@
 const express = require('express');
 
 const router = express.Router();
-const isAuth = require('../middleware/is_authorized');
-const Books = require('../models/books');
-const users = require('../models/users');
-const randomNumber2 = require('../utils/rndNumb2');
+const isAuth = require('../../middleware/is_authorized');
+const Books = require('./model');
+const users = require('../user/model');
+const randomNumber2 = require('../../utils/rndNumb2');
+const { bookPostValidation, bookGetValidation } = require('./validation');
 
 router.use(isAuth);
 
@@ -47,7 +48,12 @@ router.use(isAuth);
  */
 
 router
+    // eslint-disable-next-line consistent-return
     .get('/', async (req, res) => {
+        const { error } = bookGetValidation(req.query);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         if (req.query.users === 'true') {
             const allBooks = await Books.find().populate('authorId');
             res.status(200).json(allBooks);
@@ -132,6 +138,10 @@ router
 
 router
     .post('/', async (req, res) => {
+        const { error } = bookPostValidation(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         const user = await users.findOne({ _id: req.body.authorId });
         if (user) {
             const book = new Books({

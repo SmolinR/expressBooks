@@ -32,6 +32,6 @@ const options = {
             url: 'http://localhost:3000',
         }],
     },
-    apis: ['./routers/*', './models/*'],
+    apis: ['./api/**/*.js'],
 };
 module.exports = options;

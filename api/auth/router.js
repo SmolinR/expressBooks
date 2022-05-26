@@ -7,8 +7,9 @@
 const express = require('express');
 
 const router = express.Router();
-const randomString = require('../utils/rndString');
-const Users = require('../models/users');
+const randomString = require('../../utils/rndString');
+const Users = require('../user/model');
+const { signInValidation, signUpValidation } = require('./validation');
 
 /**
  * @swagger
@@ -42,12 +43,16 @@ const Users = require('../models/users');
 
 router
     .post('/sign-up', async (req, res) => {
+        const { error } = signUpValidation(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         const user = new Users({
             login: req.body.login,
             password: req.body.password,
         });
         await user.save();
-        res.status(201).json({ message: 'Пользователь зарегестрирован' });
+        return res.status(201).json({ message: 'Пользователь зарегестрирован' });
     });
 
 /**
@@ -81,6 +86,10 @@ router
 
 router
     .post('/sign-in', async (req, res) => {
+        const { error } = signInValidation(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
         const user = await Users.findOne({ login: req.body.login, password: req.body.password });
         if (user) {
             const newToken = {
@@ -88,10 +97,9 @@ router
             };
             user.token = newToken.token;
             await user.save();
-            res.status(201).json({ token: user.token });
-        } else {
-            res.status(401).json({ message: 'Не авторизовано' });
+            return res.status(201).json({ token: user.token });
         }
+        return res.status(401).json({ message: 'Не авторизовано' });
     });
 
 /**
