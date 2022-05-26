@@ -6,10 +6,10 @@
  */
 
 const express = require('express');
-const isAdmin = require('../middleware/is_admin');
-const isAuth = require('../middleware/is_authorized');
-const users = require('../models/users');
-const { adminValidation } = require('../validation/admin_validation');
+const isAdmin = require('../../middleware/is_admin');
+const isAuth = require('../../middleware/is_authorized');
+const users = require('../user/model');
+const { adminValidation } = require('./validation');
 
 const router = express.Router();
 
@@ -49,7 +49,7 @@ router
         if (user) {
             user.isAdmin = true;
             await user.save();
-            res.status(200).json({ message: 'Администратор успешно назначен' });
+            return res.status(200).json({ message: 'Администратор успешно назначен' });
         }
         return res.status(404).json({ message: 'Пользователь не найден' });
     });

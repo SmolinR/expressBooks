@@ -8,12 +8,11 @@
 const express = require('express');
 
 const router = express.Router();
-const isAuth = require('../middleware/is_authorized');
-const Books = require('../models/books');
-const users = require('../models/users');
-const randomNumber2 = require('../utils/rndNumb2');
-const { bookPostValidation } = require('../validation/book_postValidation');
-const { bookGetValidation } = require('../validation/book_getValidation');
+const isAuth = require('../../middleware/is_authorized');
+const Books = require('./model');
+const users = require('../user/model');
+const randomNumber2 = require('../../utils/rndNumb2');
+const { bookPostValidation, bookGetValidation } = require('./validation');
 
 router.use(isAuth);
 

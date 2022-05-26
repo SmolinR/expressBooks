@@ -1,4 +1,4 @@
-const users = require('../models/users');
+const users = require('../api/user/model');
 
 const isAuth = async function isAuthorized(req, res, next) {
     const user = await users.findOne({ token: req.header('Authorization') });

@@ -7,9 +7,9 @@
 const express = require('express');
 
 const router = express.Router();
-const randomString = require('../utils/rndString');
-const Users = require('../models/users');
-const { userValidation } = require('../validation/user_validation');
+const randomString = require('../../utils/rndString');
+const Users = require('../user/model');
+const { signInValidation, signUpValidation } = require('./validation');
 
 /**
  * @swagger
@@ -43,7 +43,7 @@ const { userValidation } = require('../validation/user_validation');
 
 router
     .post('/sign-up', async (req, res) => {
-        const { error } = userValidation(req.body);
+        const { error } = signUpValidation(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
@@ -86,7 +86,7 @@ router
 
 router
     .post('/sign-in', async (req, res) => {
-        const { error } = userValidation(req.body);
+        const { error } = signInValidation(req.body);
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }

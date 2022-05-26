@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-exports.bookPostValidation = (data) => {
+const bookPostValidation = (data) => {
     const schema = Joi.object({
         title: Joi.string()
             .min(3)
@@ -14,3 +14,15 @@ exports.bookPostValidation = (data) => {
     });
     return schema.validate(data);
 };
+
+const bookGetValidation = (data) => {
+    const schema = Joi.object({
+        users: Joi.boolean(),
+        authorId: Joi.string()
+            .max(24)
+            .token(),
+    });
+    return schema.validate(data);
+};
+
+module.exports = { bookPostValidation, bookGetValidation };

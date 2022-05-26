@@ -8,10 +8,10 @@
 const express = require('express');
 
 const router = express.Router();
-const Categories = require('../models/categories');
-const isAdmin = require('../middleware/is_admin');
-const isAuth = require('../middleware/is_authorized');
-const { categoriesValidation } = require('../validation/categories_validation');
+const Categories = require('./model');
+const isAdmin = require('../../middleware/is_admin');
+const isAuth = require('../../middleware/is_authorized');
+const { categoriesValidation } = require('./validation');
 
 router.use(isAuth, isAdmin);
 
