@@ -9,7 +9,7 @@ const bookRouter = require('./api/book/router');
 const usersRouter = require('./api/user/router');
 const categoriesRouter = require('./api/category/router');
 const adminRouter = require('./api/admin/router');
-const { PORT, MONGO_URL, FRONTEND_URL } = require('./constants');
+const { MONGO_URL, FRONTEND_URL } = require('./constants');
 const options = require('./swagger-options');
 
 mongoose
@@ -34,6 +34,7 @@ mongoose
             swaggerUi.serve,
             swaggerUi.setup(specs, { explorer: true }),
         );
+        const PORT = process.env.PORT || 3000;
 
         app.listen(PORT, () => {
             // eslint-disable-next-line no-console
