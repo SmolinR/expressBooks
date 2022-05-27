@@ -39,7 +39,4 @@ mongoose
             // eslint-disable-next-line no-console
             console.log(`Server has started on port ${PORT}!`);
         });
-        app.connection({
-            port: (process.env.PORT || 3000),
-        });
     });
