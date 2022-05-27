@@ -35,7 +35,7 @@ mongoose
             swaggerUi.setup(specs, { explorer: true }),
         );
 
-        app.listen(PORT, () => {
+        app.listen(process.env.PORT || PORT, () => {
             // eslint-disable-next-line no-console
             console.log(`Server has started on port ${PORT}!`);
         });
