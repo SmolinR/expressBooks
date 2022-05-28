@@ -30,6 +30,9 @@ const options = {
         },
         servers: [{
             url: 'http://localhost:3000',
+        },
+        {
+            url: 'https://ancient-cove-98602.herokuapp.com/',
         }],
     },
     apis: ['./api/**/*.js'],
