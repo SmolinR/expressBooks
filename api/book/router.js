@@ -100,9 +100,9 @@ router
     .get('/:id', async (req, res) => {
         const oneBook = await Books.findOne({ _id: req.params.id });
         if (oneBook) {
-            res.status(200).send(oneBook);
+            res.status(200).json(oneBook);
         } else {
-            res.status(404).send('Книга не найдена');
+            res.status(404).json({ message: 'Книга не найдена' });
         }
     });
 
@@ -194,7 +194,7 @@ router
         if (comment) {
             return res.status(200).json(comment.comment);
         }
-        return res.status(404).json('Книга не найдена');
+        return res.status(404).json({ message: 'Книга не найдена' });
     });
 
 /**
