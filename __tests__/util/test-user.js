@@ -1,5 +1,4 @@
 const User = require('../../api/user/model');
-
 const user = new User({
   login: 'ruhaUser',
   password: '123',
