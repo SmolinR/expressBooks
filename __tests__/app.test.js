@@ -8,8 +8,6 @@ const dropCollections = require('./util/db-clearing');
 const connectDB = require('./util/db-connection');
 const disconnectDB = require('./util/db-disconnection');
 
-jest.setTimeout(60000);
-
 describe('Main test', () => {
   beforeAll(async () => {
     await connectDB();
