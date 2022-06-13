@@ -42,18 +42,18 @@ const { signInValidation, signUpValidation } = require('./validation');
  */
 
 router
-    .post('/sign-up', async (req, res) => {
-        const { error } = signUpValidation(req.body);
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
-        const user = new Users({
-            login: req.body.login,
-            password: req.body.password,
-        });
-        await user.save();
-        return res.status(201).json({ message: 'Пользователь зарегестрирован' });
+  .post('/sign-up', async (req, res) => {
+    const { error } = signUpValidation(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    const user = new Users({
+      login: req.body.login,
+      password: req.body.password,
     });
+    await user.save();
+    return res.status(201).json({ message: 'Пользователь зарегестрирован' });
+  });
 
 /**
  * @swagger
@@ -85,22 +85,22 @@ router
  */
 
 router
-    .post('/sign-in', async (req, res) => {
-        const { error } = signInValidation(req.body);
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
-        const user = await Users.findOne({ login: req.body.login, password: req.body.password });
-        if (user) {
-            const newToken = {
-                token: randomString(10),
-            };
-            user.token = newToken.token;
-            await user.save();
-            return res.status(201).json({ token: user.token });
-        }
-        return res.status(401).json({ message: 'Не авторизовано' });
-    });
+  .post('/sign-in', async (req, res) => {
+    const { error } = signInValidation(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    const user = await Users.findOne({ login: req.body.login, password: req.body.password });
+    if (user) {
+      const newToken = {
+        token: randomString(10),
+      };
+      user.token = newToken.token;
+      await user.save();
+      return res.status(201).json({ token: user.token });
+    }
+    return res.status(401).json({ message: 'Не авторизовано' });
+  });
 
 /**
  * @swagger
@@ -123,14 +123,14 @@ router
  */
 
 router
-    .delete('/logout', async (req, res) => {
-        const user = await Users.findOne({ token: req.header('Authorization') });
-        if (user) {
-            user.token = null;
-            await user.save();
-            return res.status(200).json({ message: 'Выход произошел успешно' });
-        }
-        return res.status(401).json({ message: 'Не авторизовано' });
-    });
+  .delete('/logout', async (req, res) => {
+    const user = await Users.findOne({ token: req.header('Authorization') });
+    if (user) {
+      user.token = null;
+      await user.save();
+      return res.status(200).json({ message: 'Выход произошел успешно' });
+    }
+    return res.status(401).json({ message: 'Не авторизовано' });
+  });
 
 module.exports = router;

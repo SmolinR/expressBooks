@@ -34,11 +34,11 @@ const mongoose = require('mongoose');
  */
 
 const schema = mongoose.Schema({
-    title: String,
-    authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
-    rating: Number,
-    comment: { type: Array, default: [] },
-    icon: String,
+  title: String,
+  authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+  rating: Number,
+  comment: { type: Array, default: [] },
+  icon: String,
 });
 
 module.exports = mongoose.model('books', schema);

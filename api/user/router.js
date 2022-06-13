@@ -28,9 +28,9 @@ router.use(isAuth);
      *                      description: User is not authorized
      */
 router
-    .get('/me', async (req, res) => {
-        res.status(200).json(req.user);
-    });
+  .get('/me', async (req, res) => {
+    res.status(200).json(req.user);
+  });
 /**
  * @swagger
  *  /users:
@@ -49,8 +49,8 @@ router
  */
 
 router
-    .get('/', async (req, res) => {
-        const allUsers = await users.find();
-        res.status(200).json(allUsers);
-    });
+  .get('/', async (req, res) => {
+    const allUsers = await users.find();
+    res.status(200).json(allUsers);
+  });
 module.exports = router;

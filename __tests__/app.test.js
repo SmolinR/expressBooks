@@ -11,19 +11,19 @@ const disconnectDB = require('./util/db-disconnection');
 jest.setTimeout(60000);
 
 describe('Main test', () => {
-    beforeAll(async () => {
-        await connectDB();
-        await dropCollections();
-        console.log('Mongo connected');
-    });
-    afterAll(async () => {
-        await dropCollections();
-        await disconnectDB();
-        console.log('Mongoose disconnected');
-    });
-    describe('auth test', authTest(app));
-    describe('book test', bookTest(app));
-    describe('user test', userTest(app));
-    describe('admin test', adminTest(app));
-    describe('category test', categoryTest(app));
+  beforeAll(async () => {
+    await connectDB();
+    await dropCollections();
+    console.log('Mongo connected');
+  });
+  afterAll(async () => {
+    await dropCollections();
+    await disconnectDB();
+    console.log('Mongoose disconnected');
+  });
+  describe('book test', bookTest(app));
+  describe('user test', userTest(app));
+  describe('admin test', adminTest(app));
+  describe('category test', categoryTest(app));
+  describe('auth test', authTest(app));
 });

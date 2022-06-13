@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -244,17 +244,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -287,19 +280,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">33x</span>
-<span class="cline-any cline-yes">33x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">33x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -379,18 +379,18 @@ const { signInValidation, signUpValidation } = require('./validation');
  */
 &nbsp;
 router
-    .post('/sign-up', async (req, res) =&gt; {
-        const { error } = signUpValidation(req.body);
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
-        const user = new Users({
-            login: req.body.login,
-            password: req.body.password,
-        });
-        await user.save();
-        return res.status(201).json({ message: 'Пользователь зарегестрирован' });
+  .post('/sign-up', async (req, res) =&gt; {
+    const { error } = signUpValidation(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    const user = new Users({
+      login: req.body.login,
+      password: req.body.password,
     });
+    await user.save();
+    return res.status(201).json({ message: 'Пользователь зарегестрирован' });
+  });
 &nbsp;
 /**
  * @swagger
@@ -422,22 +422,22 @@ router
  */
 &nbsp;
 router
-    .post('/sign-in', async (req, res) =&gt; {
-        const { error } = signInValidation(req.body);
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
-        const user = await Users.findOne({ login: req.body.login, password: req.body.password });
-        if (user) {
-            const newToken = {
-                token: randomString(10),
-            };
-            user.token = newToken.token;
-            await user.save();
-            return res.status(201).json({ token: user.token });
-        }
-        return res.status(401).json({ message: 'Не авторизовано' });
-    });
+  .post('/sign-in', async (req, res) =&gt; {
+    const { error } = signInValidation(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    const user = await Users.findOne({ login: req.body.login, password: req.body.password });
+    if (user) {
+      const newToken = {
+        token: randomString(10),
+      };
+      user.token = newToken.token;
+      await user.save();
+      return res.status(201).json({ token: user.token });
+    }
+    return res.status(401).json({ message: 'Не авторизовано' });
+  });
 &nbsp;
 /**
  * @swagger
@@ -460,15 +460,15 @@ router
  */
 &nbsp;
 router
-    .delete('/logout', async (req, res) =&gt; {
-        const user = await Users.findOne({ token: req.header('Authorization') });
-        if (user) {
-            user.token = null;
-            await user.save();
-            return res.status(200).json({ message: 'Выход произошел успешно' });
-        }
-        return res.status(401).json({ message: 'Не авторизовано' });
-    });
+  .delete('/logout', async (req, res) =&gt; {
+    const user = await Users.findOne({ token: req.header('Authorization') });
+    if (user) {
+      user.token = null;
+      await user.save();
+      return res.status(200).json({ message: 'Выход произошел успешно' });
+    }
+    return res.status(401).json({ message: 'Не авторизовано' });
+  });
 &nbsp;
 module.exports = router;
 &nbsp;</pre></td></tr></table></pre>
@@ -478,7 +478,7 @@ module.exports = router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri Jun 10 2022 01:30:19 GMT+0300 (Восточная Европа, летнее время)
+                at Mon Jun 13 2022 17:43:08 GMT+0300 (Восточная Европа, летнее время)
             </div>
         <script src="../../../prettify.js"></script>
         <script>

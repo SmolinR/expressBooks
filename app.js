@@ -13,7 +13,7 @@ const options = require('./swagger-options');
 
 const app = express();
 app.use(cors({
-    origin: FRONTEND_URL,
+  origin: FRONTEND_URL,
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -26,8 +26,8 @@ app.use('/admin', adminRouter);
 const specs = swaggerJsdoc(options);
 
 app.use(
-    '/api-docs',
-    swaggerUi.serve,
-    swaggerUi.setup(specs, { explorer: true }),
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { explorer: true }),
 );
 module.exports = app;
