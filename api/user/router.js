@@ -50,7 +50,7 @@ router
 
 router
   .get('/', async (req, res) => {
-    const allUsers = await users.find();
+    const allUsers = await users.find({}, { password: 0 });
     res.status(200).json(allUsers);
   });
 module.exports = router;

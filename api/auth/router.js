@@ -7,6 +7,7 @@
 const express = require('express');
 
 const router = express.Router();
+const bcrypt = require('bcrypt');
 const randomString = require('../../utils/rndString');
 const Users = require('../user/model');
 const { signInValidation, signUpValidation } = require('./validation');
@@ -47,9 +48,11 @@ router
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
     const user = new Users({
       login: req.body.login,
-      password: req.body.password,
+      password: hashedPassword,
     });
     await user.save();
     return res.status(201).json({ message: 'Пользователь зарегестрирован' });
