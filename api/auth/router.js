@@ -7,6 +7,7 @@
 const express = require('express');
 
 const router = express.Router();
+const bcrypt = require('bcrypt');
 const randomString = require('../../utils/rndString');
 const Users = require('../user/model');
 const { signInValidation, signUpValidation } = require('./validation');
@@ -47,9 +48,11 @@ router
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
     const user = new Users({
       login: req.body.login,
-      password: req.body.password,
+      password: hashedPassword,
     });
     await user.save();
     return res.status(201).json({ message: 'Пользователь зарегестрирован' });
@@ -90,16 +93,20 @@ router
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    const user = await Users.findOne({ login: req.body.login, password: req.body.password });
-    if (user) {
-      const newToken = {
-        token: randomString(10),
-      };
-      user.token = newToken.token;
-      await user.save();
-      return res.status(201).json({ token: user.token });
+    const user = await Users.findOne({ login: req.body.login });
+    if (!user) {
+      return res.status(401).json({ message: 'Не авторизовано' });
     }
-    return res.status(401).json({ message: 'Не авторизовано' });
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ message: 'Не авторизовано' });
+    }
+    const newToken = {
+      token: randomString(10),
+    };
+    user.token = newToken.token;
+    await user.save();
+    return res.status(201).json({ token: user.token });
   });
 
 /**
