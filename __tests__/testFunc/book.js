@@ -1,15 +1,14 @@
 const request = require('supertest');
-const user = require('../util/test-user');
 
 const {
   title, authorId, id,
 } = require('../util/testvariables');
 
-module.exports = (app) => () => {
+module.exports = (app, people) => () => {
   it('GET: /books, 200, authorized', async () => {
     await request(app)
       .get('/books')
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toEqual([]);
@@ -45,12 +44,12 @@ module.exports = (app) => () => {
     }];
     await request(app)
       .post('/books')
-      .set('Authorization', user.token)
-      .send({ title: title.fullTitle, authorId: user._id });
+      .set('Authorization', people.user.token)
+      .send({ title: title.full, authorId: people.user._id });
     await request(app)
       .get('/books')
       .query('users=true')
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toEqual(object);
@@ -60,8 +59,8 @@ module.exports = (app) => () => {
   it('GET: /books/authorId=existed id, 200, authorized', async () => {
     await request(app)
       .get('/books')
-      .query({ authorId: user._id })
-      .set('Authorization', user.token)
+      .query({ authorId: people.user._id })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect(200);
   });
@@ -73,19 +72,19 @@ module.exports = (app) => () => {
     }];
     await request(app)
       .post('/books')
-      .set('Authorization', user.token)
-      .send({ title: title.fullTitle, authorId: user._id });
+      .set('Authorization', people.user.token)
+      .send({ title: title.full, authorId: people.user._id });
     const gtBooks = await request(app)
       .get('/books')
-      .set('Authorization', user.token)
-      .query({ authorId: user._id });
+      .set('Authorization', people.user.token)
+      .query({ authorId: people.user._id });
     await request(app)
       .post(`/books/${gtBooks.body[0]._id}/comments`)
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .send({ text: 'ruhatestcommentget' });
     await request(app)
       .get(`/books/${gtBooks.body[0]._id}/comments`)
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toEqual(object);
@@ -94,8 +93,8 @@ module.exports = (app) => () => {
   });
   it('GET: /books/:id/comments, 404, authorized', async () => {
     await request(app)
-      .get(`/books/${id.wrongBookId}/comments`)
-      .set('Authorization', user.token)
+      .get(`/books/${id.wrong}/comments`)
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('Книга не найдена');
@@ -113,15 +112,15 @@ module.exports = (app) => () => {
     };
     await request(app)
       .post('/books')
-      .set('Authorization', user.token)
-      .send({ title: title.fullTitle, authorId: user._id });
+      .set('Authorization', people.user.token)
+      .send({ title: title.full, authorId: people.user._id });
     const gtBook = await request(app)
       .get('/books')
-      .set('Authorization', user.token)
-      .query({ authorId: user._id });
+      .set('Authorization', people.user.token)
+      .query({ authorId: people.user._id });
     await request(app)
       .get(`/books/${gtBook.body[2]._id}`)
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toEqual(object);
@@ -131,7 +130,7 @@ module.exports = (app) => () => {
   it('GET: /books/:id, 404, authorized', async () => {
     await request(app)
       .get('/books/126d66cb1a8971592c3b1226')
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('Книга не найдена');
@@ -146,15 +145,15 @@ module.exports = (app) => () => {
     }];
     await request(app)
       .post('/books')
-      .set('Authorization', user.token)
-      .send({ title: title.fullTitle, authorId: user._id });
+      .set('Authorization', people.user.token)
+      .send({ title: title.full, authorId: people.user._id });
     const gtBooks = await request(app)
       .get('/books')
-      .set('Authorization', user.token)
-      .query({ authorId: user._id });
+      .set('Authorization', people.user.token)
+      .query({ authorId: people.user._id });
     await request(app)
       .post(`/books/${gtBooks.body[1]._id}/comments`)
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .send({ text: 'ruhatestcommentpost' })
       .expect('Content-Type', /json/)
       .expect((res) => {
@@ -164,8 +163,8 @@ module.exports = (app) => () => {
   });
   it('POST: /books/:id/comments, 404, authorized', async () => {
     await request(app)
-      .post(`/books/${id.wrongBookId}/comments`)
-      .set('Authorization', user.token)
+      .post(`/books/${id.wrong}/comments`)
+      .set('Authorization', people.user.token)
       .send({ text: 'ruhatestcommentpost' })
       .expect('Content-Type', /json/)
       .expect((res) => {
@@ -176,8 +175,8 @@ module.exports = (app) => () => {
   it('POST: /books, 404, authorized, author doesn`t exist', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.fullTitle, authorId: '12c1f2d6a719713552185189' })
-      .set('Authorization', user.token)
+      .send({ title: title.full, authorId: '12c1f2d6a719713552185189' })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('Такого автора не существует');
@@ -187,8 +186,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, title min-length validation', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.shortTitle, authorId: user._id })
-      .set('Authorization', user.token)
+      .send({ title: title.short, authorId: people.user._id })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" length must be at least 3 characters long');
@@ -198,8 +197,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, title requirement validation', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.emptyTitle, authorId: user._id })
-      .set('Authorization', user.token)
+      .send({ title: title.empty, authorId: people.user._id })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" is not allowed to be empty');
@@ -209,8 +208,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, title fullness validation', async () => {
     await request(app)
       .post('/books')
-      .send({ authorId: user._id })
-      .set('Authorization', user.token)
+      .send({ authorId: people.user._id })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" is required');
@@ -220,8 +219,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, title max-length validation', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.longTitle, authorId: user._id })
-      .set('Authorization', user.token)
+      .send({ title: title.long, authorId: people.user._id })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" length must be less than or equal to 30 characters long');
@@ -231,8 +230,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, title alphaum validation', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.underscoreTitle, authorId: user._id })
-      .set('Authorization', user.token)
+      .send({ title: title.underscore, authorId: people.user._id })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" must only contain alpha-numeric characters');
@@ -242,8 +241,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, authorId max-length validation', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.fullTitle, authorId: authorId.longhAuthorId })
-      .set('Authorization', user.token)
+      .send({ title: title.full, authorId: authorId.long })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"authorId" length must be less than or equal to 24 characters long');
@@ -253,8 +252,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, authorId fullness validation', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.fullTitle, authorId: authorId.emptyAuthorId })
-      .set('Authorization', user.token)
+      .send({ title: title.full, authorId: authorId.empty })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"authorId" is not allowed to be empty');
@@ -264,8 +263,8 @@ module.exports = (app) => () => {
   it('POST: /books, 400, authorized, authorId requirement validation', async () => {
     await request(app)
       .post('/books')
-      .send({ title: title.fullTitle })
-      .set('Authorization', user.token)
+      .send({ title: title.full })
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"authorId" is required');

@@ -1,13 +1,11 @@
 const request = require('supertest');
-const admin = require('../util/test-admin');
 const { categoryTitle } = require('../util/testvariables');
-const user = require('../util/test-user');
 
-module.exports = (app) => () => {
+module.exports = (app, people) => () => {
   it('GET: /categories, 200', (done) => {
     request(app)
       .get('/categories')
-      .set('Authorization', admin.token)
+      .set('Authorization', people.admin.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toEqual([]);
@@ -23,8 +21,8 @@ module.exports = (app) => () => {
     };
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.fullTitle, icon: 'icon' })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.full, icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toEqual(object);
@@ -34,8 +32,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, admin permissions validation', async () => {
     await request(app)
       .post('/categories')
-      .set('Authorization', user.token)
-      .send({ title: categoryTitle.shortTitle, icon: 'icon' })
+      .set('Authorization', people.user.token)
+      .send({ title: categoryTitle.short, icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('Вы не имеете прав для совершения запроса');
@@ -45,8 +43,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, title min-length validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.shortTitle, icon: 'icon' })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.short, icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" length must be at least 3 characters long');
@@ -56,8 +54,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, title max-length validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.longTitle, icon: 'icon' })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.long, icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" length must be less than or equal to 30 characters long');
@@ -67,8 +65,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, title max-length validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.longTitle, icon: 'icon' })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.long, icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" length must be less than or equal to 30 characters long');
@@ -78,8 +76,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, title fullness validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.emptyTitle, icon: 'icon' })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.empty, icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" is not allowed to be empty');
@@ -89,7 +87,7 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, title requirement validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
+      .set('Authorization', people.admin.token)
       .send({ icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
@@ -100,8 +98,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, title alphaum validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.underscoreTitle, icon: 'icon' })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.underscore, icon: 'icon' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"title" must only contain alpha-numeric characters');
@@ -111,8 +109,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, icon fullness validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.fullTitle, icon: '' })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.full, icon: '' })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"icon" is not allowed to be empty');
@@ -122,8 +120,8 @@ module.exports = (app) => () => {
   it('POST: /categories, 400, icon requirement validation', (done) => {
     request(app)
       .post('/categories')
-      .set('Authorization', admin.token)
-      .send({ title: categoryTitle.fullTitle })
+      .set('Authorization', people.admin.token)
+      .send({ title: categoryTitle.full })
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body.message).toBe('"icon" is required');

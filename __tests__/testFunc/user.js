@@ -1,7 +1,6 @@
 const request = require('supertest');
-const user = require('../util/test-user');
 
-module.exports = (app) => () => {
+module.exports = (app, people) => () => {
   it('GET: /users/me, 401, unauthorized', (done) => {
     request(app)
       .get('/users/me')
@@ -15,8 +14,8 @@ module.exports = (app) => () => {
   it('GET: /users/me, 200, authorized', async () => {
     const object = {
       _id: expect.any(String),
-      login: user.login,
-      password: user.password,
+      login: people.user.login,
+      password: people.user.password,
       isAdmin: false,
       __v: 0,
       token: expect.any(String),
@@ -24,7 +23,7 @@ module.exports = (app) => () => {
     };
     await request(app)
       .get('/users/me')
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toEqual(object);
@@ -34,7 +33,7 @@ module.exports = (app) => () => {
   it('GET: /users, 200', async () => {
     await request(app)
       .get('/users')
-      .set('Authorization', user.token)
+      .set('Authorization', people.user.token)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200);

@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest",
     "start": "node index.js",
-    "start dev": "nodemon index.js"
+    "start:dev": "nodemon index.js",
+    "commit": "cz"
   },
   "keywords": [],
   "author": "",
@@ -24,10 +25,16 @@
   "description": "",
   "devDependencies": {
     "@shelf/jest-mongodb": "^3.0.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.15.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^28.1.0",
     "supertest": "^6.2.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

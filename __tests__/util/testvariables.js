@@ -1,37 +1,37 @@
 const login = {
-  fullLogin: 'ruhatest',
-  longLogin: 'ruhatestruhatestruhatestruhatest',
-  wrongLogin: 'ruhawrong',
-  shortLogin: 'r',
-  emptyLogin: '',
+  full: 'ruhatest',
+  long: 'ruhatestruhatestruhatestruhatest',
+  wrong: 'ruhawrong',
+  short: 'r',
+  empty: '',
 };
 const password = {
-  fullPassword: '123',
-  shortPassword: '1',
-  emptyPassword: '',
+  full: '123',
+  short: '1',
+  empty: '',
 };
 const title = {
-  fullTitle: 'ruhatestbook',
-  longTitle: 'ruhatestbookruhatestbookruhatestbook',
-  underscoreTitle: '___',
-  shortTitle: 't',
-  emptyTitle: '',
+  full: 'ruhatestbook',
+  long: 'ruhatestbookruhatestbookruhatestbook',
+  underscore: '___',
+  short: 't',
+  empty: '',
 };
 const authorId = {
-  longhAuthorId: '62a1ef59dca393285066a173a',
-  emptyAuthorId: '',
+  long: '62a1ef59dca393285066a173a',
+  empty: '',
 };
 const id = {
-  longId: '62a1ef59dca393285066a173a',
-  emptyId: '',
-  wrongBookId: '12a2698bbd1256773855e471',
+  long: '62a1ef59dca393285066a173a',
+  empty: '',
+  wrong: '12a2698bbd1256773855e471',
 };
 const categoryTitle = {
-  fullTitle: 'ruhatestcategory',
-  longTitle: 'ruhatestcategoryruhatestcategoryruhatestcategory',
-  underscoreTitle: '___',
-  shortTitle: 'c',
-  emptyTitle: '',
+  full: 'ruhatestcategory',
+  long: 'ruhatestcategoryruhatestcategoryruhatestcategory',
+  underscore: '___',
+  short: 'c',
+  empty: '',
 };
 module.exports = {
   login, password, title, authorId, id, categoryTitle,
