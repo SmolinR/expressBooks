@@ -11,9 +11,15 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "indent": ["error", 4],
         "max-len":["error", 150],
-        "linebreak-style": ["error", "windows"]
-        
+        "no-underscore-dangle":"off"
+    },
+    "globals": {
+        "describe":"readonly",
+        "it":"readonly",
+        "jest": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "expect":"readonly"
     }
 }

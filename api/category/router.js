@@ -37,10 +37,10 @@ router.use(isAuth, isAdmin);
  */
 
 router
-    .get('/', async (req, res) => {
-        const allCategories = await Categories.find();
-        return res.status(200).json(allCategories);
-    });
+  .get('/', async (req, res) => {
+    const allCategories = await Categories.find();
+    return res.status(200).json(allCategories);
+  });
 /**
  * @swagger
  *  /categories:
@@ -66,17 +66,17 @@ router
  *
  */
 router
-    .post('/', async (req, res) => {
-        const { error } = categoriesValidation(req.body);
-        if (error) {
-            return res.status(400).json({ message: error.details[0].message });
-        }
-        const category = new Categories({
-            title: req.body.title,
-            icon: req.body.icon,
-        });
-        await category.save();
-        return res.status(201).json(category);
+  .post('/', async (req, res) => {
+    const { error } = categoriesValidation(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    const category = new Categories({
+      title: req.body.title,
+      icon: req.body.icon,
     });
+    await category.save();
+    return res.status(201).json(category);
+  });
 
 module.exports = router;
