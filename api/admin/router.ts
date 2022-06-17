@@ -4,17 +4,19 @@
  *      name: Admin permission
  *      description: The admin`s permission managing API
  */
-import express, { Request, RequestHandler, Response, Router } from "express";
-import { isAdmin } from "../../middleware/is_admin";
-import { isAuth } from "../../middleware/is_authorized";
-import { IMakeAdmin } from "./interfaces/make-admin.interface";
+import {
+  Request, Response, Router,
+} from 'express';
+import isAdmin from '../../middleware/is_admin';
+import isAuth from '../../middleware/is_authorized';
+import { IMakeAdmin } from './interfaces/make-admin.interface';
 import users from '../user/model';
-import { adminValidation } from './validation';
-import { IDeleteAdmin } from "./interfaces/delete-admin.interface";
+import adminValidation from './validation';
+import { IDeleteAdmin } from './interfaces/delete-admin.interface';
 
 const router = Router();
 
-router.use(isAuth as any, isAdmin as any);
+router.use(isAuth, isAdmin);
 
 /**
  * @swagger
@@ -39,7 +41,6 @@ router.use(isAuth as any, isAdmin as any);
  *                      description: User dont have admin permissions to give it to other
  *
  */
-
 
 router
   .patch('/make-admin', async (req: Request<any, any, IMakeAdmin>, res: Response) => {
@@ -95,4 +96,3 @@ router
     return res.status(404).json({ message: 'Пользователь не найден' });
   });
 export default router;
-

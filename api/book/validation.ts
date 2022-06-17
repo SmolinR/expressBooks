@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { IBookGet } from './interfaces/book-get.interface';
 import { IBookPost } from './interfaces/book-post.interface';
 
-export const bookPostValidation = (data: IBookPost ): Joi.ValidationResult => {
+export const bookPostValidation = (data: IBookPost): Joi.ValidationResult => {
   const schema = Joi.object({
     title: Joi.string()
       .min(3)

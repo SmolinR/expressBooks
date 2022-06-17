@@ -31,4 +31,4 @@ const schema = new Schema<ICategory>({
   title: String,
   icon: String,
 });
-export default mongoose.model('categories', schema)
+export default mongoose.model('categories', schema);

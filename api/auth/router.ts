@@ -4,15 +4,16 @@
  *      name: Auth
  *      description: The auth managing API
  */
-import express, { Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 
-const router = Router();
 import bcrypt from 'bcrypt';
 import randomString from '../../utils/rndString';
 import Users from '../user/model';
 import { signInValidation, signUpValidation } from './validation';
 import { ISignUp } from './interfaces/sign-up.interface';
-import {ISignIn} from './interfaces/sign-in.interface';
+import { ISignIn } from './interfaces/sign-in.interface';
+
+const router = Router();
 
 /**
  * @swagger
@@ -45,7 +46,7 @@ import {ISignIn} from './interfaces/sign-in.interface';
  */
 
 router
-  .post('/sign-up', async (req: Request<any, any, ISignUp> , res: Response) => {
+  .post('/sign-up', async (req: Request<any, any, ISignUp>, res: Response) => {
     const { error } = signUpValidation(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });

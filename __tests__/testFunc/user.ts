@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { Express } from 'express';
 import { IPeople } from '../interfaces/people.interfaces';
 
 export = (app: Express.Application, people: IPeople) => () => {

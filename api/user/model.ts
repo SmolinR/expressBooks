@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 /**
  * @swagger
  * components:
@@ -49,4 +49,4 @@ const schema = new Schema<IUser>({
   avarageRating: Number,
   isAdmin: { type: Boolean, default: false },
 });
-export default mongoose.model('users', schema)
+export default mongoose.model('users', schema);

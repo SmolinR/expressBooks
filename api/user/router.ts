@@ -6,10 +6,10 @@
  */
 import express, { Request, Response } from 'express';
 
-const router = express.Router();
-import { isAuth } from '../../middleware/is_authorized';
+import isAuth from '../../middleware/is_authorized';
 import users from './model';
 
+const router = express.Router();
 router.use(isAuth);
 /**
      * @swagger

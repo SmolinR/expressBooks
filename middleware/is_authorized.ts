@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import users from '../api/user/model';
 
-export const isAuth = async function isAuthorized(req: Request, res: Response, next: NextFunction) {
+const isAuth = async function isAuthorized(req: Request, res: Response, next: NextFunction) {
   const user = await users.findOne({ token: req.header('Authorization') }, { password: 0 });
   if (!req.header('Authorization')) {
     return res.status(401).json({ message: 'Не авторизировано' });
@@ -12,3 +12,4 @@ export const isAuth = async function isAuthorized(req: Request, res: Response, n
   }
   return res.status(401).json({ message: 'Не авторизировано' });
 };
+export default isAuth;

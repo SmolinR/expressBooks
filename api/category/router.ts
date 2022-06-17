@@ -7,12 +7,12 @@
 
 import express, { Request, Response } from 'express';
 
-const router = express.Router();
 import Categories, { ICategory } from './model';
-import { isAdmin } from '../../middleware/is_admin';
-import { isAuth } from '../../middleware/is_authorized';
-import { categoriesValidation } from './validation';
+import isAdmin from '../../middleware/is_admin';
+import isAuth from '../../middleware/is_authorized';
+import categoriesValidation from './validation';
 
+const router = express.Router();
 router.use(isAuth, isAdmin);
 
 /**
@@ -66,7 +66,7 @@ router
  *
  */
 router
-  .post('/', async (req: Request<any, any, ICategory>  , res) => {
+  .post('/', async (req: Request<any, any, ICategory>, res) => {
     const { error } = categoriesValidation(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });

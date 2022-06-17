@@ -4,6 +4,6 @@ export default {
   testEnvironment: 'node',
   testTimeout: 60000,
   testMatch: [
-    "<rootDir>/__tests__/*.test.ts"
+    '<rootDir>/__tests__/*.test.ts',
   ],
 };

@@ -1,4 +1,4 @@
-import mongoose, { AnyArray, Document, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { IUser } from '../user/model';
 
 /**
@@ -40,7 +40,7 @@ interface IComment {
 }
 interface IBook {
   title: string,
-  authorId: mongoose.Schema.Types.ObjectId |  IUser,
+  authorId: mongoose.Schema.Types.ObjectId | IUser,
   rating: number,
   comment: Array<IComment>
   icon?: string,

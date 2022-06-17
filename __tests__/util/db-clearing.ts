@@ -8,5 +8,5 @@ async function removeAllCollections() {
     const collection = mongoose.connection.collections[collectionName];
     await collection.deleteMany({});
   }
-};
+}
 export default removeAllCollections;

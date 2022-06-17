@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { Express } from 'express';
 import { IPeople } from '../interfaces/people.interfaces';
 import { id } from '../util/testvariables';
 

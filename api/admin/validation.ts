@@ -1,7 +1,7 @@
-import Joi from "joi";
-import { IMakeAdmin } from "./interfaces/make-admin.interface";
+import Joi from 'joi';
+import { IMakeAdmin } from './interfaces/make-admin.interface';
 
-export const adminValidation = (data: IMakeAdmin): Joi.ValidationResult => {
+const adminValidation = (data: IMakeAdmin): Joi.ValidationResult => {
   const schema = Joi.object({
     id: Joi.string()
       .max(24)
@@ -9,3 +9,4 @@ export const adminValidation = (data: IMakeAdmin): Joi.ValidationResult => {
   });
   return schema.validate(data);
 };
+export default adminValidation;

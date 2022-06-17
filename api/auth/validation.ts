@@ -1,9 +1,6 @@
-import { ISignUp } from "./interfaces/sign-up.interface";
-import { ISignIn } from "./interfaces/sign-in.interface";
-
 import Joi from 'joi';
-
-
+import { ISignUp } from './interfaces/sign-up.interface';
+import { ISignIn } from './interfaces/sign-in.interface';
 
 export const signInValidation = (data: ISignIn) : Joi.ValidationResult => {
   const schema = Joi.object({
@@ -21,7 +18,7 @@ export const signInValidation = (data: ISignIn) : Joi.ValidationResult => {
   return schema.validate(data);
 };
 
-export const signUpValidation = (data: ISignUp ): Joi.ValidationResult => {
+export const signUpValidation = (data: ISignUp): Joi.ValidationResult => {
   const schema = Joi.object({
     login: Joi.string()
       .alphanum()

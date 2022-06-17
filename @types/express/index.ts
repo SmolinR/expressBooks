@@ -1,8 +1,8 @@
-import {IUser} from '../../api/user/model';
+import { IUser } from '../../api/user/model';
 
-declare global {
-  namespace Express {
-    interface Request {
+ declare global {
+ export namespace Express {
+    export interface Request {
       user: IUser;
     }
   }

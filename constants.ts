@@ -1,4 +1,6 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 interface ENV extends NodeJS.ProcessEnv {
   PORT: string
@@ -10,4 +12,6 @@ const {
   PORT, MONGO_URL, FRONTEND_URL, MONGO_TEST_URL,
 } = process.env as ENV;
 
-export { MONGO_URL, FRONTEND_URL, PORT, MONGO_TEST_URL, }
+export {
+  MONGO_URL, FRONTEND_URL, PORT, MONGO_TEST_URL,
+};
