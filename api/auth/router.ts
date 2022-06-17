@@ -9,9 +9,10 @@ import { Request, Response, Router } from 'express';
 import bcrypt from 'bcrypt';
 import randomString from '../../utils/rndString';
 import Users from '../user/model';
-import { signInValidation, signUpValidation } from './validation';
+import { signUpSchema } from './validation';
 import { ISignUp } from './interfaces/sign-up.interface';
 import { ISignIn } from './interfaces/sign-in.interface';
+import validate from '../../middleware/validate';
 
 const router = Router();
 
@@ -46,11 +47,7 @@ const router = Router();
  */
 
 router
-  .post('/sign-up', async (req: Request<any, any, ISignUp>, res: Response) => {
-    const { error } = signUpValidation(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
+  .post('/sign-up', validate(signUpSchema), async (req: Request<any, any, ISignUp>, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     const user = new Users({
@@ -91,11 +88,7 @@ router
  */
 
 router
-  .post('/sign-in', async (req: Request<any, any, ISignIn>, res: Response) => {
-    const { error } = signInValidation(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
+  .post('/sign-in', validate(signUpSchema), async (req: Request<any, any, ISignIn>, res: Response) => {
     const user = await Users.findOne({ login: req.body.login });
     if (!user) {
       return res.status(401).json({ message: 'Не авторизовано' });
