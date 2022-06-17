@@ -9,9 +9,10 @@ import {
 } from 'express';
 import isAdmin from '../../middleware/is_admin';
 import isAuth from '../../middleware/is_authorized';
+import validate from '../../middleware/validate';
 import { IMakeAdmin } from './interfaces/make-admin.interface';
 import users from '../user/model';
-import adminValidation from './validation';
+import { makeAdminSchema, deleteAdminSchema } from './validation';
 import { IDeleteAdmin } from './interfaces/delete-admin.interface';
 
 const router = Router();
@@ -43,11 +44,7 @@ router.use(isAuth, isAdmin);
  */
 
 router
-  .patch('/make-admin', async (req: Request<any, any, IMakeAdmin>, res: Response) => {
-    const { error } = adminValidation(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
+  .patch('/make-admin', validate(makeAdminSchema), async (req: Request<any, any, IMakeAdmin>, res: Response) => {
     const user = await users.findOne({ _id: req.body.id });
     if (user) {
       user.isAdmin = true;
@@ -82,11 +79,7 @@ router
  */
 
 router
-  .patch('/delete-admin', async (req: Request<any, any, IDeleteAdmin>, res: Response) => {
-    const { error } = adminValidation(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
+  .patch('/delete-admin', validate(deleteAdminSchema), async (req: Request<any, any, IDeleteAdmin>, res: Response) => {
     const user = await users.findOne({ _id: req.body.id });
     if (user) {
       user.isAdmin = false;

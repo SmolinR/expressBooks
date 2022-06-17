@@ -11,9 +11,10 @@ import isAuth from '../../middleware/is_authorized';
 import Books from './model';
 import users from '../user/model';
 import randomNumber2 from '../../utils/rndNumb2';
-import { bookPostValidation, bookGetValidation } from './validation';
 import { IBookPost } from './interfaces/book-post.interface';
 import { IBookGet } from './interfaces/book-get.interface';
+import validate from '../../middleware/validate';
+import { bookGetSchema, bookPostSchema } from './validation';
 
 const router = express.Router();
 router.use(isAuth);
@@ -50,12 +51,7 @@ router.use(isAuth);
  */
 
 router
-  // eslint-disable-next-line consistent-return
-  .get('/', async (req: Request<any, any, any, IBookGet>, res: Response) => {
-    const { error } = bookGetValidation(req.query);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
+  .get('/', validate(bookGetSchema), async (req: Request<any, any, any, IBookGet>, res: Response) => {
     if (req.query.users === 'true') {
       const allBooks = await Books.find().populate('authorId');
       res.status(200).json(allBooks);
@@ -138,11 +134,7 @@ router
  *
  */
 router
-  .post('/', async (req: Request<any, any, IBookPost>, res: Response) => {
-    const { error } = bookPostValidation(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
+  .post('/', validate(bookPostSchema), async (req: Request<any, any, IBookPost>, res: Response) => {
     const user = await users.findOne({ _id: req.body.authorId });
     if (user) {
       const book = new Books({

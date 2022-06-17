@@ -1,4 +1,4 @@
-export interface IBookGet {
+export type IBookGet = {
   users: string
   authorId: string
 }
