@@ -9,7 +9,7 @@ import { Request, Response, Router } from 'express';
 import bcrypt from 'bcrypt';
 import randomString from '../../utils/rndString';
 import Users from '../user/model';
-import { signUpSchema } from './validation';
+import { signUpSchema, signInSchema } from './validation';
 import { ISignUp } from './interfaces/sign-up.interface';
 import { ISignIn } from './interfaces/sign-in.interface';
 import validate from '../../middleware/validate';
@@ -88,7 +88,7 @@ router
  */
 
 router
-  .post('/sign-in', validate(signUpSchema), async (req: Request<any, any, ISignIn>, res: Response) => {
+  .post('/sign-in', validate(signInSchema), async (req: Request<any, any, ISignIn>, res: Response) => {
     const user = await Users.findOne({ login: req.body.login });
     if (!user) {
       return res.status(401).json({ message: 'Не авторизовано' });
