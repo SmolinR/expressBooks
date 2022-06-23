@@ -9,7 +9,8 @@
     "start:prod": "npm run build && npm run start",
     "start:dev": "nodemon index.ts",
     "commit": "cz",
-    "lint": "eslint . --ext .ts --fix"
+    "lint": "eslint . --ext .ts --fix",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -44,6 +45,7 @@
     "eslint": "^8.18.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "husky": "^8.0.1",
     "jest": "^28.1.1",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3",
