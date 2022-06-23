@@ -104,10 +104,7 @@ router
       if (!validPassword) {
         return res.status(401).json({ message: 'Не авторизовано' });
       }
-      const newToken = {
-        token: randomString(10),
-      };
-      user.token = newToken.token;
+      user.token = randomString(10);
       await user.save();
       return res.status(201).json({ token: user.token });
     } catch (error) {
