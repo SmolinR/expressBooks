@@ -5,7 +5,7 @@
  *      description: The books managing API
  */
 
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 
 import isAuth from '../../middleware/is_authorized';
 import Books from './model';
@@ -51,20 +51,22 @@ router.use(isAuth);
  */
 
 router
-  .get('/', validate(bookGetSchema), async (req: Request<any, any, any, IBookGet>, res: Response) => {
-    if (req.query.users === 'true') {
-      const allBooks = await Books.find().populate('authorId');
-      res.status(200).json(allBooks);
-    } else if (req.query.authorId) {
-      const book = await Books.find({ authorId: req.query.authorId });
-      if (!book) {
-        res.status(404).json({ message: 'Книги этого автора не найдены' });
-      } else {
-        res.status(200).json(book);
+  .get('/', validate(bookGetSchema), async (req: Request<any, any, any, IBookGet>, res: Response, next: NextFunction) => {
+    try {
+      if (req.query.users === 'true') {
+        const allBooks = await Books.find().populate('authorId');
+        return res.status(200).json(allBooks);
+      } if (req.query.authorId) {
+        const book = await Books.find({ authorId: req.query.authorId });
+        if (!book) {
+          return res.status(404).json({ message: 'Книги этого автора не найдены' });
+        }
+        return res.status(200).json(book);
       }
-    } else {
       const allBooks2 = await Books.find();
-      res.status(200).json(allBooks2);
+      return res.status(200).json(allBooks2);
+    } catch (error) {
+      return next(error);
     }
   });
 
@@ -95,12 +97,15 @@ router
  */
 
 router
-  .get('/:id', async (req: Request, res: Response) => {
-    const oneBook = await Books.findOne({ _id: req.params.id });
-    if (oneBook) {
-      res.status(200).json(oneBook);
-    } else {
-      res.status(404).json({ message: 'Книга не найдена' });
+  .get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const oneBook = await Books.findOne({ _id: req.params.id });
+      if (oneBook) {
+        return res.status(200).json(oneBook);
+      }
+      return res.status(404).json({ message: 'Книга не найдена' });
+    } catch (error) {
+      return next(error);
     }
   });
 
@@ -134,23 +139,27 @@ router
  *
  */
 router
-  .post('/', validate(bookPostSchema), async (req: Request<any, any, IBookPost>, res: Response) => {
-    const user = await users.findOne({ _id: req.body.authorId });
-    if (user) {
-      const book = new Books({
-        title: req.body.title,
-        authorId: req.body.authorId,
-        rating: randomNumber2(0, 100),
-      });
-      await book.save();
-      const avarageRating = await Books.aggregate([
-        { $group: { _id: '$authorId', avg: { $avg: '$rating' } } },
-      ]);
-      user.avarageRating = avarageRating[0].avg;
-      await user.save();
-      return res.status(201).json({ message: 'Книга создана' });
+  .post('/', validate(bookPostSchema), async (req: Request<any, any, IBookPost>, res: Response, next: NextFunction) => {
+    try {
+      const user = await users.findOne({ _id: req.body.authorId });
+      if (user) {
+        const book = new Books({
+          title: req.body.title,
+          authorId: req.body.authorId,
+          rating: randomNumber2(0, 100),
+        });
+        await book.save();
+        const avarageRating = await Books.aggregate([
+          { $group: { _id: '$authorId', avg: { $avg: '$rating' } } },
+        ]);
+        user.avarageRating = avarageRating[0].avg;
+        await user.save();
+        return res.status(201).json({ message: 'Книга создана' });
+      }
+      return res.status(404).json({ message: 'Такого автора не существует' });
+    } catch (error) {
+      return next(error);
     }
-    return res.status(404).json({ message: 'Такого автора не существует' });
   });
 
 /**
@@ -182,12 +191,16 @@ router
  */
 
 router
-  .get('/:id/comments', async (req: Request, res: Response) => {
-    const comment = await Books.findById(req.params.id);
-    if (comment) {
-      return res.status(200).json(comment.comment);
+  .get('/:id/comments', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const comment = await Books.findById(req.params.id);
+      if (comment) {
+        return res.status(200).json(comment.comment);
+      }
+      return res.status(404).json({ message: 'Книга не найдена' });
+    } catch (error) {
+      return next(error);
     }
-    return res.status(404).json({ message: 'Книга не найдена' });
   });
 
 /**
@@ -223,19 +236,23 @@ router
  */
 
 router
-  .post('/:id/comments', async (req: Request, res: Response) => {
-    const book = await Books.findById(req.params.id);
-    if (book) {
-      const comment = {
-        text: req.body.text,
-        date: new Date(),
-        commentator: req.user.id,
-      };
-      book.comment.push(comment);
-      await book.save();
-      return res.status(201).json(book.comment);
+  .post('/:id/comments', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const book = await Books.findById(req.params.id);
+      if (book) {
+        const comment = {
+          text: req.body.text,
+          date: new Date(),
+          commentator: req.user.id,
+        };
+        book.comment.push(comment);
+        await book.save();
+        return res.status(201).json(book.comment);
+      }
+      return res.status(404).json({ message: 'Книга не найдена' });
+    } catch (error) {
+      return next(error);
     }
-    return res.status(404).json({ message: 'Книга не найдена' });
   });
 
 export default router;

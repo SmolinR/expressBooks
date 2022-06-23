@@ -5,6 +5,7 @@
  *      description: The admin`s permission managing API
  */
 import {
+  NextFunction,
   Request, Response, Router,
 } from 'express';
 import isAdmin from '../../middleware/is_admin';
@@ -44,14 +45,18 @@ router.use(isAuth, isAdmin);
  */
 
 router
-  .patch('/make-admin', validate(makeAdminSchema), async (req: Request<any, any, IMakeAdmin>, res: Response) => {
-    const user = await users.findOne({ _id: req.body.id });
-    if (user) {
-      user.isAdmin = true;
-      await user.save();
-      return res.status(200).json({ message: 'Администратор успешно назначен' });
+  .patch('/make-admin', validate(makeAdminSchema), async (req: Request<any, any, IMakeAdmin>, res: Response, next: NextFunction) => {
+    try {
+      const user = await users.findOne({ _id: req.body.id });
+      if (user) {
+        user.isAdmin = true;
+        await user.save();
+        return res.status(200).json({ message: 'Администратор успешно назначен' });
+      }
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    } catch (error) {
+      return next(error);
     }
-    return res.status(404).json({ message: 'Пользователь не найден' });
   });
 
 /**
@@ -79,13 +84,17 @@ router
  */
 
 router
-  .patch('/delete-admin', validate(deleteAdminSchema), async (req: Request<any, any, IDeleteAdmin>, res: Response) => {
-    const user = await users.findOne({ _id: req.body.id });
-    if (user) {
-      user.isAdmin = false;
-      await user.save();
-      return res.status(200).json({ message: 'Администратор успешно снят' });
+  .patch('/delete-admin', validate(deleteAdminSchema), async (req: Request<any, any, IDeleteAdmin>, res: Response, next: NextFunction) => {
+    try {
+      const user = await users.findOne({ _id: req.body.id });
+      if (user) {
+        user.isAdmin = false;
+        await user.save();
+        return res.status(200).json({ message: 'Администратор успешно снят' });
+      }
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    } catch (error) {
+      return next(error);
     }
-    return res.status(404).json({ message: 'Пользователь не найден' });
   });
 export default router;
