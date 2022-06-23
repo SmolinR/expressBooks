@@ -4,7 +4,7 @@
  *      name: User
  *      description: The users managing API
  */
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 
 import isAuth from '../../middleware/is_authorized';
 import users from './model';
@@ -28,8 +28,12 @@ router.use(isAuth);
      *                      description: User is not authorized
      */
 router
-  .get('/me', async (req: Request, res: Response) => {
-    res.status(200).json(req.user);
+  .get('/me', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return res.status(200).json(req.user);
+    } catch (error) {
+      return next(error);
+    }
   });
 /**
  * @swagger
@@ -49,8 +53,12 @@ router
  */
 
 router
-  .get('/', async (req: Request, res: Response) => {
-    const allUsers = await users.find({}, { password: 0 });
-    res.status(200).json(allUsers);
+  .get('/', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const allUsers = await users.find({}, { password: 0 });
+      return res.status(200).json(allUsers);
+    } catch (error) {
+      return next(error);
+    }
   });
 export default router;

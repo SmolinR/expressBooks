@@ -5,7 +5,7 @@
  *      description: The categories managing API
  */
 
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 
 import Categories, { ICategory } from './model';
 import isAdmin from '../../middleware/is_admin';
@@ -38,9 +38,13 @@ router.use(isAuth, isAdmin);
  */
 
 router
-  .get('/', async (req: Request, res: Response) => {
-    const allCategories = await Categories.find();
-    return res.status(200).json(allCategories);
+  .get('/', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const allCategories = await Categories.find();
+      return res.status(200).json(allCategories);
+    } catch (error) {
+      return next(error);
+    }
   });
 /**
  * @swagger
@@ -67,13 +71,17 @@ router
  *
  */
 router
-  .post('/', validate(categoriesSchema), async (req: Request<any, any, ICategory>, res) => {
-    const category = new Categories({
-      title: req.body.title,
-      icon: req.body.icon,
-    });
-    await category.save();
-    return res.status(201).json(category);
+  .post('/', validate(categoriesSchema), async (req: Request<any, any, ICategory>, res: Response, next: NextFunction) => {
+    try {
+      const category = new Categories({
+        title: req.body.title,
+        icon: req.body.icon,
+      });
+      await category.save();
+      return res.status(201).json(category);
+    } catch (error) {
+      return next(error);
+    }
   });
 
 export default router;

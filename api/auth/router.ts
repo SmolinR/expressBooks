@@ -4,7 +4,9 @@
  *      name: Auth
  *      description: The auth managing API
  */
-import { Request, Response, Router } from 'express';
+import {
+  NextFunction, Request, Response, Router,
+} from 'express';
 
 import bcrypt from 'bcrypt';
 import randomString from '../../utils/rndString';
@@ -47,15 +49,19 @@ const router = Router();
  */
 
 router
-  .post('/sign-up', validate(signUpSchema), async (req: Request<any, any, ISignUp>, res: Response) => {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    const user = new Users({
-      login: req.body.login,
-      password: hashedPassword,
-    });
-    await user.save();
-    return res.status(201).json({ message: 'Пользователь зарегестрирован' });
+  .post('/sign-up', validate(signUpSchema), async (req: Request<any, any, ISignUp>, res: Response, next: NextFunction) => {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      const user = new Users({
+        login: req.body.login,
+        password: hashedPassword,
+      });
+      await user.save();
+      return res.status(201).json({ message: 'Пользователь зарегестрирован' });
+    } catch (error) {
+      return next(error);
+    }
   });
 
 /**
@@ -88,21 +94,25 @@ router
  */
 
 router
-  .post('/sign-in', validate(signInSchema), async (req: Request<any, any, ISignIn>, res: Response) => {
-    const user = await Users.findOne({ login: req.body.login });
-    if (!user) {
-      return res.status(401).json({ message: 'Не авторизовано' });
+  .post('/sign-in', validate(signInSchema), async (req: Request<any, any, ISignIn>, res: Response, next: NextFunction) => {
+    try {
+      const user = await Users.findOne({ login: req.body.login });
+      if (!user) {
+        return res.status(401).json({ message: 'Не авторизовано' });
+      }
+      const validPassword = await bcrypt.compare(req.body.password, user.password);
+      if (!validPassword) {
+        return res.status(401).json({ message: 'Не авторизовано' });
+      }
+      const newToken = {
+        token: randomString(10),
+      };
+      user.token = newToken.token;
+      await user.save();
+      return res.status(201).json({ token: user.token });
+    } catch (error) {
+      return next(error);
     }
-    const validPassword = await bcrypt.compare(req.body.password, user.password);
-    if (!validPassword) {
-      return res.status(401).json({ message: 'Не авторизовано' });
-    }
-    const newToken = {
-      token: randomString(10),
-    };
-    user.token = newToken.token;
-    await user.save();
-    return res.status(201).json({ token: user.token });
   });
 
 /**
@@ -126,14 +136,18 @@ router
  */
 
 router
-  .delete('/logout', async (req: Request, res: Response) => {
-    const user = await Users.findOne({ token: req.header('Authorization') });
-    if (user) {
-      user.token = null;
-      await user.save();
-      return res.status(200).json({ message: 'Выход произошел успешно' });
+  .delete('/logout', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = await Users.findOne({ token: req.header('Authorization') });
+      if (user) {
+        user.token = null;
+        await user.save();
+        return res.status(200).json({ message: 'Выход произошел успешно' });
+      }
+      return res.status(401).json({ message: 'Не авторизовано' });
+    } catch (error) {
+      return next(error);
     }
-    return res.status(401).json({ message: 'Не авторизовано' });
   });
 
 export default router;

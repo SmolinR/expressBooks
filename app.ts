@@ -10,11 +10,13 @@ import categoriesRouter from './api/category/router';
 import adminRouter from './api/admin/router';
 import { FRONTEND_URL } from './constants';
 import options from './swagger-options';
+import errorHandler from './middleware/error';
 
 const app = express();
 app.use(cors({
   origin: FRONTEND_URL,
 }));
+errorHandler(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
