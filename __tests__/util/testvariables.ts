@@ -1,3 +1,15 @@
+import jwt from 'jsonwebtoken';
+import { PASSWORD_TOKEN_SECRET } from '../../constants';
+
+const email = {
+  full: 'smolin438@gmail.com',
+  wrong: 'ajksdngfkjn@skdmfg.com',
+  noValid: 'testnovalid',
+  empty: '',
+};
+const token = {
+  full: jwt.sign({ payload: 'payload' }, PASSWORD_TOKEN_SECRET, { expiresIn: '1h' }),
+};
 const login = {
   full: 'ruhatest',
   long: 'ruhatestruhatestruhatestruhatest',
@@ -34,5 +46,5 @@ const categoryTitle = {
   empty: '',
 };
 export {
-  login, password, title, authorId, id, categoryTitle,
+  email, login, password, title, authorId, id, categoryTitle, token,
 };

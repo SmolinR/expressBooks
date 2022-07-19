@@ -31,7 +31,8 @@ export = (app: Express.Application, people: IPeople) => () => {
       title: 'ruhatestbook',
       authorId: {
         _id: expect.any(String),
-        login: 'ruhaUser',
+        email: people.user.email,
+        login: people.user.login,
         password: '123',
         isAdmin: false,
         __v: 0,

@@ -6,12 +6,16 @@ import mongoose, { Schema } from 'mongoose';
  *     User:
  *       type: object
  *       required:
+ *         - email
  *         - login
  *         - password
  *       properties:
  *         id:
  *           type: integer
  *           description: The auto-generated id of the book.
+ *         email:
+ *           type: string
+ *           description: User`s email.
  *         login:
  *           type: string
  *           description: The name of user.
@@ -36,6 +40,7 @@ import mongoose, { Schema } from 'mongoose';
  */
 export interface IUser {
   id: string,
+  email: string,
   login: string,
   password: string,
   token: string | null,
@@ -43,6 +48,7 @@ export interface IUser {
   isAdmin: boolean,
 }
 const schema = new Schema<IUser>({
+  email: String,
   login: String,
   password: String,
   token: String,
