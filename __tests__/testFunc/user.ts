@@ -16,6 +16,7 @@ export = (app: Express.Application, people: IPeople) => () => {
   it('GET: /users/me, 200, authorized', async () => {
     const object = {
       _id: expect.any(String),
+      email: people.user.email,
       login: people.user.login,
       isAdmin: false,
       __v: 0,

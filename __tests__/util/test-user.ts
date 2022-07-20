@@ -3,6 +3,7 @@ import { ITestUser } from '../interfaces/user.interface';
 
 const makeUser = async () => {
   const user = new User({
+    email: 'charac746@gmail.com',
     login: 'ruhaUser',
     password: '123',
     isAdmin: false,
