@@ -13,13 +13,17 @@ import nodemailer from 'nodemailer';
 import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import randomString from '../../utils/rndString';
 import Users from '../user/model';
-import { signUpSchema, signInSchema, forgotPasswordSchema, resetPasswordSchema } from './validation';
+import {
+  signUpSchema, signInSchema, forgotPasswordSchema, resetPasswordSchema,
+} from './validation';
 import { ISignUp } from './interfaces/sign-up.interface';
 import { ISignIn } from './interfaces/sign-in.interface';
 import validate from '../../middleware/validate';
 import { IForgot } from './interfaces/forgot-password.interface';
 import { IPayloadForgot } from './interfaces/payload.interface';
-import { PASSWORD_TOKEN_SECRET } from '../../constants';
+import {
+  PASSWORD_TOKEN_SECRET, TRANSPORTER_HOST, TRANSPORTER_PORT, TRANPORTER_USER, TRANSPORTER_PASS,
+} from '../../constants';
 
 const router = Router();
 
@@ -245,19 +249,18 @@ router
       const user = await Users.findOne({ email: req.body.email });
       if (user) {
         const transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
-          port: 587,
+          host: TRANSPORTER_HOST,
+          port: Number(TRANSPORTER_PORT),
           secure: false,
           auth: {
-            user: 'koropsystems@gmail.com',
-            pass: 'qvoolmgoajpuwktg',
+            user: TRANPORTER_USER,
+            pass: TRANSPORTER_PASS,
           },
         });
         const payload: IPayloadForgot = {
           id: user.id,
         };
         const passwordToken = jwt.sign(payload, PASSWORD_TOKEN_SECRET, { expiresIn: '10m' });
-        console.log('aftertokensign');
         const message = {
           from: 'Korop Systems <koropsystems@gmail.com>',
           to: user.email,
@@ -384,6 +387,7 @@ router
           message: 'User not found',
         });
       });
+      return JsonWebTokenError;
     } catch (error) {
       if (error instanceof JsonWebTokenError) {
         return res.status(500).json({
